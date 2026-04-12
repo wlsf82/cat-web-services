@@ -1,37 +1,73 @@
-import { StatusBadge } from '@/components/ui/StatusBadge/StatusBadge';
+import type { ChangeEvent } from 'react';
 import styles from './TopBar.module.scss';
 
-type TopBarProps = {
-  consoleTitle: string;
-  consoleSubtitle: string;
+type ViewerAccountLike = {
+  name?: string;
+  accountNumber?: string;
+  avatarUrl?: string | null;
 };
 
-export const TopBar = ({ consoleTitle, consoleSubtitle }: TopBarProps) => {
+export type TopBarProps = {
+  searchValue: string;
+  onSearchChange: (value: string) => void;
+  account: ViewerAccountLike | null;
+  onOpenRegistration: () => void;
+  onCopyAccountNumber: () => void | Promise<void>;
+  copied: boolean;
+};
+
+export function TopBar({
+                         searchValue,
+                         onSearchChange,
+                         account,
+                         onOpenRegistration,
+                         onCopyAccountNumber,
+                         copied
+                       }: TopBarProps) {
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    onSearchChange(event.target.value);
+  };
+
+  const accountNumber = account?.accountNumber ?? 'CWS-418-000';
+  const avatarUrl = account?.avatarUrl || '/images/odd-eyed-sphynx-cat-in-gb.jpg';
+  const viewerName = account?.name ?? 'Guest cat';
+
   return (
-    <header className={styles.topBar}>
-      <div className={styles.copyBlock}>
-        <p className={styles.product}>CWS Console</p>
-        <h1 className={styles.title}>{consoleTitle}</h1>
-        <p className={styles.subtitle}>{consoleSubtitle}</p>
-      </div>
+      <header className={styles.topBar}>
+        <div className={styles.brand}>
+          <div className={styles.brandMark}>CWS</div>
+          <div className={styles.brandText}>
+            <strong>Cat Web Services</strong>
+            <span>Premium pink feline cloud</span>
+          </div>
+        </div>
 
-      <div className={styles.metaGrid}>
-        <div className={styles.metaCard}>
-          <span className={styles.metaLabel}>Region</span>
-          <strong className={styles.metaValue}>eu-west-cat-1</strong>
-          <StatusBadge label="Stable purring" tone="healthy" />
+        <div className={styles.searchWrap}>
+          <span className={styles.searchIcon}>⌕</span>
+          <input
+              className={styles.searchInput}
+              type="text"
+              placeholder="Search services"
+              value={searchValue}
+              onChange={handleChange}
+          />
         </div>
-        <div className={styles.metaCard}>
-          <span className={styles.metaLabel}>Control plane</span>
-          <strong className={styles.metaValue}>Build 418.0</strong>
-          <StatusBadge label="Human-safe-ish" tone="warning" />
+
+        <div className={styles.actions}>
+          <button type="button" className={styles.accountChip} onClick={onCopyAccountNumber}>
+            <span className={styles.accountLabel}>Account</span>
+            <strong>{accountNumber}</strong>
+            <span className={styles.copyState}>{copied ? 'Copied' : 'Copy'}</span>
+          </button>
+
+          <button type="button" className={styles.profileChip} onClick={onOpenRegistration}>
+            <img className={styles.avatar} src={avatarUrl} alt={viewerName} />
+            <span className={styles.profileMeta}>
+            <strong>{viewerName}</strong>
+            <span>{account ? 'Viewer sandbox' : 'Register account'}</span>
+          </span>
+          </button>
         </div>
-        <div className={styles.metaCard}>
-          <span className={styles.metaLabel}>Tier</span>
-          <strong className={styles.metaValue}>Feline enterprise</strong>
-          <StatusBadge label="Treat-backed" tone="neutral" />
-        </div>
-      </div>
-    </header>
+      </header>
   );
-};
+}
