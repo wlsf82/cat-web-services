@@ -1,146 +1,149 @@
 .topBar {
-  position: sticky;
-  top: 16px;
-  z-index: 30;
   display: grid;
-  grid-template-columns: auto minmax(240px, 1fr) auto;
+  grid-template-columns: auto minmax(240px, 1fr) auto auto;
   align-items: center;
-  gap: 16px;
-  padding: 14px 18px;
-  border: 1px solid rgba(244, 182, 211, 0.45);
-  border-radius: 24px;
-  background: rgba(255, 255, 255, 0.9);
-  box-shadow: 0 16px 40px rgba(227, 163, 193, 0.18);
+  gap: 0.75rem;
+  min-height: 74px;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid rgba(235, 196, 215, 0.82);
+  border-radius: 26px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 18px 46px rgba(231, 176, 203, 0.16);
   backdrop-filter: blur(18px);
 }
 
-.brand {
+.brandBlock {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 0.7rem;
   min-width: 0;
 }
 
-.brandMark {
+.logoMark {
   display: grid;
   place-items: center;
-  width: 42px;
-  height: 42px;
-  border-radius: 14px;
-  background: linear-gradient(135deg, #ffb7d5 0%, #ffc9e1 100%);
-  color: #8f295d;
-  font-size: 0.8rem;
-  font-weight: 800;
-  letter-spacing: 0.12em;
+  width: 46px;
+  height: 46px;
+  border-radius: 16px;
+  border: 1px solid rgba(238, 199, 219, 0.92);
+  background: linear-gradient(180deg, #fff7fb 0%, #ffe9f4 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.92);
+  font-size: 1.05rem;
 }
 
 .brandText {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-
-  strong {
-    font-size: 0.92rem;
-    color: #612749;
-  }
-
-  span {
-    font-size: 0.72rem;
-    color: #9e6d89;
-  }
+  display: grid;
+  gap: 0.08rem;
 }
 
-.searchWrap {
+.product {
+  color: var(--color-brand-strong);
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.title {
+  font-size: 0.92rem;
+  line-height: 1.1;
+}
+
+.subtitle {
+  color: var(--color-text-soft);
+  font-size: 0.71rem;
+}
+
+.searchField {
   display: flex;
   align-items: center;
-  gap: 10px;
-  min-width: 0;
-  padding: 0 14px;
-  height: 48px;
-  border: 1px solid rgba(244, 182, 211, 0.5);
-  border-radius: 16px;
-  background: #fff8fc;
+  gap: 0.55rem;
+  min-height: 48px;
+  padding: 0 0.95rem;
+  border: 1px solid rgba(237, 204, 221, 0.88);
+  border-radius: 999px;
+  background: linear-gradient(180deg, #fffefe 0%, #fff8fb 100%);
 }
 
 .searchIcon {
-  flex: 0 0 auto;
-  color: #b67596;
-  font-size: 1rem;
+  font-size: 0.86rem;
 }
 
-.searchInput {
+.searchField input {
   width: 100%;
   border: 0;
   outline: 0;
   background: transparent;
-  color: #5b2745;
-  font-size: 0.84rem;
+  color: var(--color-text);
+  font-size: 0.78rem;
 }
 
-.actions {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+.searchField input::placeholder {
+  color: var(--color-text-muted);
 }
 
 .accountChip,
 .profileChip {
-  border: 1px solid rgba(244, 182, 211, 0.5);
-  background: #ffffff;
-  box-shadow: 0 10px 24px rgba(227, 163, 193, 0.12);
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-height: 48px;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid rgba(237, 204, 221, 0.88);
+  border-radius: 20px;
+  background: linear-gradient(180deg, #fffefe 0%, #fff8fb 100%);
+  cursor: pointer;
 }
 
 .accountChip {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 14px;
-  border-radius: 16px;
-  cursor: pointer;
-  color: #5b2745;
+  min-width: 188px;
+  justify-content: space-between;
+}
 
-  strong {
-    font-size: 0.8rem;
-  }
+.accountMeta,
+.profileText {
+  display: grid;
+  gap: 0.1rem;
+  text-align: left;
 }
 
 .accountLabel,
+.copyState,
+.profileText span {
+  color: var(--color-text-soft);
+  font-size: 0.68rem;
+}
+
+.accountMeta strong,
+.profileText strong {
+  font-size: 0.76rem;
+}
+
 .copyState {
-  font-size: 0.72rem;
-  color: #a36e8b;
+  color: var(--color-brand-strong);
+  font-weight: 700;
 }
 
-.profileChip {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 12px 8px 8px;
-  border-radius: 999px;
-  cursor: pointer;
-}
-
-.avatar {
+.avatarWrap {
+  flex: 0 0 38px;
   width: 38px;
   height: 38px;
+  overflow: hidden;
+  border: 1px solid rgba(237, 204, 221, 0.88);
   border-radius: 50%;
-  object-fit: cover;
-  background: #ffe6f1;
+  background: linear-gradient(180deg, #fff7fb 0%, #ffdcec 100%);
 }
 
-.profileMeta {
-  display: flex;
-  flex-direction: column;
-  text-align: left;
+.avatarWrap img,
+.avatarFallback {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
 
-  strong {
-    font-size: 0.78rem;
-    color: #5b2745;
-  }
-
-  span {
-    font-size: 0.7rem;
-    color: #a36e8b;
-  }
+.avatarFallback {
+  display: grid;
+  place-items: center;
 }
 
 @media (max-width: 1100px) {
@@ -148,7 +151,9 @@
     grid-template-columns: 1fr;
   }
 
-  .actions {
-    flex-wrap: wrap;
+  .accountChip,
+  .profileChip {
+    width: 100%;
+    justify-content: space-between;
   }
 }

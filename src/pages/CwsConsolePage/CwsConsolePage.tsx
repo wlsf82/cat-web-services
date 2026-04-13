@@ -118,16 +118,16 @@ export const CwsConsolePage = () => {
           copied={copied}
         />
       }
+      bottomDock={<ClawedShell account={viewerAccount} selectedServiceKey={selectedServiceKey} recentKeys={recentKeys} />}
     >
       <div className={styles.layout}>
-        <div className={styles.heroRow}>
-          <HeroOverview selectedService={selectedService} account={viewerAccount} />
-        </div>
+        <HeroOverview selectedService={selectedService} account={viewerAccount} />
 
-        <div className={styles.dashboardGrid}>
-          <div className={styles.primaryColumn}>
+        <div className={styles.contentGrid}>
+          <div className={styles.mainColumn}>
             <ServiceGrid services={filteredServices} activeKey={selectedServiceKey} onSelect={setSelectedServiceKey} />
-            <div className={styles.midGrid}>
+
+            <div className={styles.twoUp}>
               <UsageSummary usageSummary={consoleState.usageSummary} />
               <RecentlyViewedServices
                 services={services}
@@ -136,14 +136,14 @@ export const CwsConsolePage = () => {
                 onSelect={setSelectedServiceKey}
               />
             </div>
-            <div className={styles.lowerGrid}>
+
+            <div className={styles.twoUp}>
               <ServiceDetailPanel service={selectedService} />
               <HumanStatusCard humanStatus={consoleState.humanStatus} />
             </div>
-            <ClawedShell account={viewerAccount} selectedServiceKey={selectedServiceKey} recentKeys={recentKeys} />
           </div>
 
-          <div className={styles.secondaryColumn}>
+          <div className={styles.sideColumn}>
             <ActionCenter actions={actions} onAction={handleAction} />
             <IncidentFeed incidents={consoleState.incidents} />
             <ExecutiveReview review={review} onGenerate={handleGenerateReview} />

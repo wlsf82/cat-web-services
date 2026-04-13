@@ -1,5 +1,4 @@
-import { useMemo, useState } from 'react';
-import { Panel } from '@/components/ui/Panel/Panel';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { ServiceKey, ShellLine, ViewerAccount } from '@/types/cws';
 import styles from './ClawedShell.module.scss';
 
@@ -8,6 +7,11 @@ type ClawedShellProps = {
   selectedServiceKey: ServiceKey;
   recentKeys: ServiceKey[];
 };
+
+const collapsedHeight = 64;
+const expandedHeight = 312;
+const minHeight = 64;
+const maxHeight = 420;
 
 const seedLines = (account: ViewerAccount | null): ShellLine[] => [
   { id: 'line-1', type: 'output', value: 'Welcome to ClawedShell v0.418' },
@@ -22,7 +26,37 @@ const seedLines = (account: ViewerAccount | null): ShellLine[] => [
 export const ClawedShell = ({ account, selectedServiceKey, recentKeys }: ClawedShellProps) => {
   const [command, setCommand] = useState('');
   const [lines, setLines] = useState<ShellLine[]>(() => seedLines(account));
+  const [height, setHeight] = useState(collapsedHeight);
+  const dragStateRef = useRef<{ startY: number; startHeight: number } | null>(null);
 
+  useEffect(() => {
+    setLines(seedLines(account));
+  }, [account]);
+
+  useEffect(() => {
+    const handleMove = (event: MouseEvent) => {
+      if (!dragStateRef.current) {
+        return;
+      }
+
+      const nextHeight = dragStateRef.current.startHeight + (dragStateRef.current.startY - event.clientY);
+      setHeight(Math.max(minHeight, Math.min(maxHeight, nextHeight)));
+    };
+
+    const handleUp = () => {
+      dragStateRef.current = null;
+    };
+
+    window.addEventListener('mousemove', handleMove);
+    window.addEventListener('mouseup', handleUp);
+
+    return () => {
+      window.removeEventListener('mousemove', handleMove);
+      window.removeEventListener('mouseup', handleUp);
+    };
+  }, []);
+
+  const isExpanded = height > collapsedHeight + 20;
   const promptLabel = useMemo(() => `${account?.displayName ?? 'guest'}@cws:~$`, [account?.displayName]);
 
   const runCommand = (rawCommand: string) => {
@@ -65,23 +99,32 @@ export const ClawedShell = ({ account, selectedServiceKey, recentKeys }: ClawedS
         break;
     }
 
-    setLines((currentLines) => [...currentLines, ...nextLines].slice(-12));
+    setLines((currentLines) => [...currentLines, ...nextLines].slice(-14));
     setCommand('');
   };
 
   return (
-    <Panel eyebrow="Developer toys" title="ClawedShell terminal emulator">
-      <div className={styles.shell}>
-        <div className={styles.header}>
-          <span />
-          <span />
-          <span />
-          <strong>clawedshell</strong>
+    <section className={styles.dock} style={{ height }}>
+      <button
+        type="button"
+        className={styles.dragHandle}
+        onMouseDown={(event) => {
+          dragStateRef.current = { startY: event.clientY, startHeight: height };
+        }}
+        onDoubleClick={() => setHeight((current) => (current > collapsedHeight + 20 ? collapsedHeight : expandedHeight))}
+      >
+        <span className={styles.dragBar} />
+        <div className={styles.dragMeta}>
+          <strong>ClawedShell</strong>
+          <span>{isExpanded ? 'drag to resize' : 'double click to expand'}</span>
         </div>
+        <span className={styles.promptBadge}>{promptLabel}</span>
+      </button>
 
+      <div className={styles.surface} data-expanded={isExpanded}>
         <div className={styles.terminalOutput}>
           {lines.map((line) => (
-            <p key={line.id} className={[styles.line, line.type === 'output' ? styles.lineOutput : styles[line.type]].join(' ')}>
+            <p key={line.id} className={[styles.line, styles[line.type]].join(' ')}>
               {line.value}
             </p>
           ))}
@@ -98,6 +141,6 @@ export const ClawedShell = ({ account, selectedServiceKey, recentKeys }: ClawedS
           <input value={command} onChange={(event) => setCommand(event.target.value)} placeholder="type a command" />
         </form>
       </div>
-    </Panel>
+    </section>
   );
 };

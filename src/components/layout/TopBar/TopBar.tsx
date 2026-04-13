@@ -1,73 +1,97 @@
-import type { ChangeEvent } from 'react';
+import { useMemo, useState } from 'react';
+import { DEFAULT_AVATAR_PATH } from '@/config/cats';
+import { AppButton } from '@/components/ui/AppButton/AppButton';
+import type { ViewerAccount } from '@/types/cws';
 import styles from './TopBar.module.scss';
 
-type ViewerAccountLike = {
-  name?: string;
-  accountNumber?: string;
-  avatarUrl?: string | null;
-};
-
-export type TopBarProps = {
+type TopBarProps = {
   searchValue: string;
   onSearchChange: (value: string) => void;
-  account: ViewerAccountLike | null;
+  account: ViewerAccount | null;
   onOpenRegistration: () => void;
-  onCopyAccountNumber: () => void | Promise<void>;
+  onCopyAccountNumber: () => void;
   copied: boolean;
 };
 
-export function TopBar({
-                         searchValue,
-                         onSearchChange,
-                         account,
-                         onOpenRegistration,
-                         onCopyAccountNumber,
-                         copied
-                       }: TopBarProps) {
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    onSearchChange(event.target.value);
-  };
+export const TopBar = ({
+  searchValue,
+  onSearchChange,
+  account,
+  onOpenRegistration,
+  onCopyAccountNumber,
+  copied
+}: TopBarProps) => {
+  const [avatarErrored, setAvatarErrored] = useState(false);
 
-  const accountNumber = account?.accountNumber ?? 'CWS-418-000';
-  const avatarUrl = account?.avatarUrl || '/images/odd-eyed-sphynx-cat-in-gb.jpg';
-  const viewerName = account?.name ?? 'Guest cat';
+  const avatarUrl = useMemo(() => {
+    if (account?.avatarUrl) {
+      return account.avatarUrl;
+    }
+
+    if (avatarErrored) {
+      return '';
+    }
+
+    return DEFAULT_AVATAR_PATH;
+  }, [account?.avatarUrl, avatarErrored]);
 
   return (
-      <header className={styles.topBar}>
-        <div className={styles.brand}>
-          <div className={styles.brandMark}>CWS</div>
-          <div className={styles.brandText}>
-            <strong>Cat Web Services</strong>
-            <span>Premium pink feline cloud</span>
+    <header className={styles.topBar}>
+      <div className={styles.brandBlock}>
+        <div className={styles.logoMark} aria-hidden="true">
+          <span>🐾</span>
+        </div>
+        <div className={styles.brandText}>
+          <p className={styles.product}>CWS</p>
+          <strong className={styles.title}>Cat Web Services</strong>
+          <span className={styles.subtitle}>Premium feline infrastructure</span>
+        </div>
+      </div>
+
+      <label className={styles.searchField}>
+        <span className={styles.searchIcon} aria-hidden="true">
+          🔎
+        </span>
+        <input
+          type="search"
+          value={searchValue}
+          onChange={(event) => onSearchChange(event.target.value)}
+          placeholder="Search services"
+          aria-label="Search services"
+        />
+      </label>
+
+      {account ? (
+        <button type="button" className={styles.accountChip} onClick={onCopyAccountNumber}>
+          <div className={styles.accountMeta}>
+            <span className={styles.accountLabel}>Account number</span>
+            <strong>{account.id}</strong>
           </div>
-        </div>
+          <span className={styles.copyState}>{copied ? 'Copied' : 'Copy'}</span>
+        </button>
+      ) : (
+        <AppButton variant="secondary" onClick={onOpenRegistration}>
+          Register account
+        </AppButton>
+      )}
 
-        <div className={styles.searchWrap}>
-          <span className={styles.searchIcon}>⌕</span>
-          <input
-              className={styles.searchInput}
-              type="text"
-              placeholder="Search services"
-              value={searchValue}
-              onChange={handleChange}
-          />
+      <button type="button" className={styles.profileChip} onClick={onOpenRegistration}>
+        <div className={styles.avatarWrap}>
+          {avatarUrl ? (
+            <img
+              src={avatarUrl}
+              alt={account ? `${account.displayName} avatar` : 'Sphynx cat avatar'}
+              onError={() => setAvatarErrored(true)}
+            />
+          ) : (
+            <span className={styles.avatarFallback}>🐱</span>
+          )}
         </div>
-
-        <div className={styles.actions}>
-          <button type="button" className={styles.accountChip} onClick={onCopyAccountNumber}>
-            <span className={styles.accountLabel}>Account</span>
-            <strong>{accountNumber}</strong>
-            <span className={styles.copyState}>{copied ? 'Copied' : 'Copy'}</span>
-          </button>
-
-          <button type="button" className={styles.profileChip} onClick={onOpenRegistration}>
-            <img className={styles.avatar} src={avatarUrl} alt={viewerName} />
-            <span className={styles.profileMeta}>
-            <strong>{viewerName}</strong>
-            <span>{account ? 'Viewer sandbox' : 'Register account'}</span>
-          </span>
-          </button>
+        <div className={styles.profileText}>
+          <span>{account ? account.displayName : 'Guest review mode'}</span>
+          <strong>{account ? account.breedName : 'Odd-eyed Sphynx'}</strong>
         </div>
-      </header>
+      </button>
+    </header>
   );
-}
+};

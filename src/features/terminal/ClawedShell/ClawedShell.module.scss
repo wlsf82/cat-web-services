@@ -1,39 +1,71 @@
-.shell {
+.dock {
+  width: min(1460px, calc(100% - 2rem));
+  margin: 0 auto;
+  border: 1px solid rgba(232, 199, 216, 0.92);
+  border-bottom: 0;
+  border-radius: 22px 22px 0 0;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 -14px 42px rgba(224, 171, 197, 0.2);
   overflow: hidden;
-  border-radius: 22px;
-  border: 1px solid rgba(234, 191, 216, 0.3);
-  background: #24141f;
 }
 
-.header {
-  display: flex;
+.dragHandle {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
   align-items: center;
-  gap: 0.35rem;
-  padding: 0.75rem 0.85rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  background: rgba(255, 255, 255, 0.03);
+  gap: 0.85rem;
+  width: 100%;
+  min-height: 64px;
+  padding: 0.9rem 1rem;
+  border: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.7);
+  background: linear-gradient(180deg, #fffdfd 0%, #fff4f9 100%);
+  cursor: ns-resize;
 }
 
-.header span {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: rgba(255, 214, 233, 0.7);
+.dragBar {
+  width: 42px;
+  height: 5px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #ffc6e0 0%, #ff9bc9 100%);
 }
 
-.header strong {
-  margin-left: 0.45rem;
-  color: rgba(255, 231, 243, 0.92);
-  font-size: 0.73rem;
+.dragMeta {
+  display: grid;
+  gap: 0.12rem;
+  text-align: left;
+}
+
+.dragMeta strong {
+  font-size: 0.79rem;
+}
+
+.dragMeta span,
+.promptBadge {
+  color: var(--color-text-soft);
+  font-size: 0.68rem;
+}
+
+.promptBadge {
+  padding: 0.38rem 0.65rem;
+  border: 1px solid rgba(237, 204, 221, 0.88);
+  border-radius: 999px;
+  background: #fff;
+}
+
+.surface {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  height: calc(100% - 64px);
+  background: linear-gradient(180deg, #2a1823 0%, #20111a 100%);
 }
 
 .terminalOutput {
   display: grid;
+  align-content: start;
   gap: 0.35rem;
-  min-height: 160px;
-  max-height: 230px;
   overflow: auto;
-  padding: 0.9rem;
+  padding: 0.9rem 1rem;
 }
 
 .line {
@@ -42,33 +74,28 @@
   line-height: 1.45;
 }
 
-.lineOutput,
-.error {
-  color: rgba(255, 245, 251, 0.86);
+.output {
+  color: rgba(255, 241, 247, 0.88);
 }
 
 .input {
-  color: #ffb8db;
-}
-
-.lineOutput {
-  color: rgba(255, 245, 251, 0.86);
+  color: #ffafcf;
 }
 
 .error {
-  color: #ff7fb2;
+  color: #ff7ea9;
 }
 
 .inputRow {
   display: flex;
   align-items: center;
   gap: 0.55rem;
-  padding: 0.75rem 0.9rem;
+  padding: 0.8rem 1rem;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .prompt {
-  color: #ff92c7;
+  color: #ff93c2;
   font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
   font-size: 0.72rem;
 }
@@ -78,11 +105,26 @@
   border: 0;
   outline: 0;
   background: transparent;
-  color: rgba(255, 245, 251, 0.92);
+  color: rgba(255, 241, 247, 0.94);
   font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
   font-size: 0.72rem;
 }
 
 .inputRow input::placeholder {
-  color: rgba(255, 224, 238, 0.45);
+  color: rgba(255, 224, 238, 0.42);
+}
+
+@media (max-width: 900px) {
+  .dock {
+    width: calc(100% - 1rem);
+  }
+
+  .dragHandle {
+    grid-template-columns: 1fr;
+    justify-items: start;
+  }
+
+  .promptBadge {
+    display: none;
+  }
 }

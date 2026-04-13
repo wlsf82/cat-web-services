@@ -1,27 +1,82 @@
-$font-body: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-$font-heading: 'Inter', $font-body;
+$color-bg: #fffafc;
+$color-bg-soft: #fff3f8;
+$color-surface: #ffffff;
+$color-surface-soft: #fff7fb;
+$color-surface-strong: #ffe9f3;
 
-$color-bg: #fff5f9;
-$color-bg-elevated: #fff8fb;
-$color-bg-strong: #fff0f6;
-$color-surface: rgba(255, 255, 255, 0.92);
-$color-surface-strong: rgba(255, 249, 252, 0.98);
-$color-border: rgba(233, 177, 209, 0.32);
-$color-border-strong: rgba(227, 144, 191, 0.46);
-$color-text: #33222e;
-$color-text-soft: #7b6170;
-$color-text-muted: #ab8d9c;
-$color-brand: #ff8fc5;
-$color-brand-strong: #df4b98;
-$color-accent: #ffca80;
-$color-success: #62c38b;
-$color-warning: #e8ac48;
-$color-danger: #e36e95;
+$color-border: rgba(237, 177, 206, 0.5);
+$color-border-strong: rgba(221, 132, 181, 0.7);
 
-$radius-sm: 12px;
-$radius-md: 18px;
-$radius-lg: 24px;
-$radius-xl: 32px;
+$color-text: #4f2340;
+$color-text-soft: #7f5570;
+$color-text-muted: #a07a91;
 
-$shadow-soft: 0 20px 50px rgba(229, 175, 204, 0.16);
-$shadow-glow: 0 0 0 1px rgba(255, 143, 197, 0.12), 0 18px 40px rgba(229, 175, 204, 0.18);
+$color-brand: #f35ca8;
+$color-brand-strong: #d93c8c;
+$color-brand-soft: #ffd6e9;
+
+$color-success: #5cc69b;
+$color-warning: #f0b24d;
+$color-danger: #ef6e98;
+$color-info: #7fa8ff;
+
+$shadow-sm: 0 6px 16px rgba(223, 164, 193, 0.14);
+$shadow-md: 0 14px 34px rgba(223, 164, 193, 0.16);
+$shadow-lg: 0 24px 60px rgba(223, 164, 193, 0.18);
+
+$radius-sm: 16px;
+$radius-md: 22px;
+$radius-lg: 28px;
+$radius-pill: 999px;
+
+$space-1: 4px;
+$space-2: 8px;
+$space-3: 12px;
+$space-4: 16px;
+$space-5: 20px;
+$space-6: 24px;
+$space-7: 28px;
+$space-8: 32px;
+
+$font-size-xs: 0.7rem;
+$font-size-sm: 0.78rem;
+$font-size-md: 0.88rem;
+$font-size-lg: 1rem;
+$font-size-xl: 1.35rem;
+$font-size-2xl: 1.8rem;
+
+$transition-fast: 160ms ease;
+$transition-base: 220ms ease;
+
+:root {
+  --cws-bg: #fffafc;
+  --cws-bg-soft: #fff3f8;
+  --cws-surface: #ffffff;
+  --cws-surface-soft: #fff7fb;
+  --cws-surface-strong: #ffe9f3;
+
+  --cws-border: rgba(237, 177, 206, 0.5);
+  --cws-border-strong: rgba(221, 132, 181, 0.7);
+
+  --cws-text: #4f2340;
+  --cws-text-soft: #7f5570;
+  --cws-text-muted: #a07a91;
+
+  --cws-brand: #f35ca8;
+  --cws-brand-strong: #d93c8c;
+  --cws-brand-soft: #ffd6e9;
+
+  --cws-success: #5cc69b;
+  --cws-warning: #f0b24d;
+  --cws-danger: #ef6e98;
+  --cws-info: #7fa8ff;
+
+  --cws-shadow-sm: 0 6px 16px rgba(223, 164, 193, 0.14);
+  --cws-shadow-md: 0 14px 34px rgba(223, 164, 193, 0.16);
+  --cws-shadow-lg: 0 24px 60px rgba(223, 164, 193, 0.18);
+
+  --cws-radius-sm: 16px;
+  --cws-radius-md: 22px;
+  --cws-radius-lg: 28px;
+  --cws-radius-pill: 999px;
+}

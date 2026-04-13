@@ -1,77 +1,188 @@
-.hero {
+@use '@/styles/tokens' as *;
+
+.root {
   display: grid;
-  gap: 1rem;
+  grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+  gap: $space-5;
+  align-items: stretch;
 }
 
-.copyColumn {
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+  min-width: 0;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  padding: 8px 12px;
+  border: 1px solid rgba(243, 92, 168, 0.18);
+  border-radius: $radius-pill;
+  background: rgba(255, 237, 246, 0.82);
+  color: $color-brand-strong;
+  font-size: $font-size-xs;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.title {
+  max-width: 16ch;
+  font-size: clamp(1.7rem, 2.8vw, 2.5rem);
+  line-height: 1.05;
+  color: $color-text;
+}
+
+.description {
+  max-width: 58ch;
+  font-size: $font-size-md;
+  color: $color-text-soft;
+}
+
+.metrics {
   display: grid;
-  gap: 0.9rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: $space-4;
 }
 
-.lead {
-  max-width: 60ch;
-  color: var(--color-text-soft);
-  font-size: 0.8rem;
-  line-height: 1.6;
+.metricCard {
+  position: relative;
+  padding: $space-4;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  background: $color-surface;
+  box-shadow: $shadow-sm;
 }
 
-.ribbonRow {
-  display: grid;
-  gap: 0.75rem;
+.metricCard::after {
+  content: '';
+  position: absolute;
+  right: 14px;
+  top: 12px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: rgba(255, 214, 233, 0.9);
+  box-shadow:
+          -14px 6px 0 -4px rgba(255, 230, 241, 0.85),
+          -4px 16px 0 -5px rgba(255, 214, 233, 0.65);
 }
 
-.ribbonCard {
-  display: grid;
-  gap: 0.18rem;
-  padding: 0.9rem;
-  border: 1px solid rgba(231, 163, 201, 0.34);
-  border-radius: 18px;
-  background: linear-gradient(180deg, rgba(255, 248, 252, 0.95) 0%, rgba(255, 241, 248, 0.95) 100%);
+.metricLabel {
+  margin-bottom: 8px;
+  color: $color-text-muted;
+  font-size: $font-size-xs;
+  font-weight: 600;
 }
 
-.ribbonCard span,
-.calloutLabel,
-.accountHint {
-  color: var(--color-text-soft);
-  font-size: 0.68rem;
+.metricValue {
+  color: $color-text;
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
 }
 
-.ribbonCard strong,
-.callout strong {
-  font-size: 0.9rem;
+.metricHint {
+  margin-top: 6px;
+  color: $color-text-soft;
+  font-size: $font-size-xs;
 }
 
-.callout {
-  display: grid;
-  gap: 0.28rem;
-  padding: 1rem;
-  border-radius: 22px;
+.focusCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: $space-4;
+  padding: $space-5;
+  border: 1px solid rgba(233, 128, 181, 0.56);
+  border-radius: $radius-lg;
   background:
-    radial-gradient(circle at 85% 20%, rgba(255, 255, 255, 0.85), transparent 18%),
-    linear-gradient(135deg, #ffd6ea 0%, #ffc0df 100%);
-  border: 1px solid rgba(231, 163, 201, 0.45);
+          radial-gradient(circle at top right, rgba(255, 255, 255, 0.95), transparent 28%),
+          linear-gradient(135deg, rgba(255, 226, 239, 0.98) 0%, rgba(255, 239, 247, 0.94) 100%);
+  box-shadow: $shadow-md;
+  min-height: 100%;
 }
 
-.callout p {
-  color: #6f4d65;
-  font-size: 0.75rem;
-  line-height: 1.5;
+.focusCard::before {
+  content: '';
+  position: absolute;
+  right: 18px;
+  top: 18px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(243, 92, 168, 0.12);
+  box-shadow:
+          -18px 9px 0 -5px rgba(243, 92, 168, 0.08),
+          -6px 20px 0 -6px rgba(243, 92, 168, 0.06);
 }
 
-.accountHint {
+.focusLabel {
+  color: $color-text-muted;
+  font-size: $font-size-xs;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.focusTitle {
+  font-size: 1.45rem;
+  color: $color-text;
+  line-height: 1.1;
+}
+
+.focusDescription {
+  color: $color-text-soft;
+  font-size: $font-size-md;
+}
+
+.focusMeta {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.6rem;
-  margin-top: 0.35rem;
+  gap: 10px;
 }
 
-@media (min-width: 860px) {
-  .hero {
-    grid-template-columns: minmax(0, 1.5fr) minmax(260px, 0.9fr);
-    align-items: stretch;
+.viewerChip,
+.metaChip,
+.statusChip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid rgba(233, 128, 181, 0.28);
+  border-radius: $radius-pill;
+  background: rgba(255, 255, 255, 0.74);
+  color: $color-text-soft;
+  font-size: $font-size-xs;
+  font-weight: 700;
+}
+
+.statusChip {
+  color: $color-brand-strong;
+  background: rgba(255, 228, 240, 0.88);
+}
+
+@media (max-width: 1080px) {
+  .root {
+    grid-template-columns: 1fr;
   }
 
-  .ribbonRow {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+  .title {
+    max-width: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .focusCard {
+    padding: $space-4;
   }
 }
