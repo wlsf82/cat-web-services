@@ -18,8 +18,8 @@ const toneMap = {
 
 export const ServiceGrid = ({ services, activeKey, onSelect }: ServiceGridProps) => {
   return (
-      <Panel eyebrow="Service catalog" title="Browse managed feline services">
-        <div className={styles.grid}>
+      <Panel title="Browse managed feline services">
+          <div className={styles.grid}>
           {services.map((service) => {
             const active = service.key === activeKey;
             const maxValue = Math.max(...service.sparkline);

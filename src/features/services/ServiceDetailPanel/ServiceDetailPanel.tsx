@@ -52,7 +52,6 @@ export const ServiceDetailPanel = ({ service }: ServiceDetailPanelProps) => {
 
   return (
       <Panel
-          eyebrow="Selected service"
           title={service.name}
           actions={
             <div className={styles.panelActions}>

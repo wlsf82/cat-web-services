@@ -6,6 +6,7 @@ import styles from './TopBar.module.scss';
 type ViewerAccountLike = {
     id?: string;
     displayName?: string;
+    breedName?: string;
     avatarUrl?: string | null;
 };
 
@@ -13,7 +14,8 @@ export type TopBarProps = {
     searchValue: string;
     onSearchChange: (value: string) => void;
     account: ViewerAccountLike | null;
-    onOpenRegistration: () => void;
+    onOpenAuth: () => void;
+    onOpenProfile: () => void;
     onCopyAccountNumber: () => void | Promise<void>;
     copied: boolean;
     activeServiceKey?: string | null;
@@ -25,7 +27,8 @@ export function TopBar({
                            searchValue,
                            onSearchChange,
                            account,
-                           onOpenRegistration,
+                           onOpenAuth,
+                           onOpenProfile,
                            onCopyAccountNumber,
                            copied,
                            activeServiceKey,
@@ -40,6 +43,7 @@ export function TopBar({
     const avatarUrl = account?.avatarUrl || '/images/odd-eyed-sphynx-cat-in-gb.jpg';
     const viewerName = account?.displayName ?? 'Guest cat';
     const serviceTitle = activeServiceName ?? 'Console Overview';
+    const handleProfileClick = account ? onOpenProfile : onOpenAuth;
 
     return (
         <header className={styles.topBar}>
@@ -80,14 +84,14 @@ export function TopBar({
           </span>
                 </button>
 
-                <button type="button" className={styles.profileChip} onClick={onOpenRegistration}>
+                <button type="button" className={styles.profileChip} onClick={handleProfileClick}>
           <span className={styles.avatarWrap}>
             <img className={styles.avatar} src={avatarUrl} alt={viewerName} />
           </span>
 
                     <span className={styles.profileMeta}>
             <strong>{viewerName}</strong>
-            <span>{account ? 'Viewer sandbox' : 'Register account'}</span>
+            <span>{account ? account.breedName ?? 'Viewer sandbox' : 'Sign in or register'}</span>
           </span>
 
                     <span className={styles.profileIcon}>

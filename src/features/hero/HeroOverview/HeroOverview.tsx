@@ -16,7 +16,7 @@ const platformStats = [
 
 export const HeroOverview = ({ selectedService, account }: HeroOverviewProps) => {
   return (
-      <Panel eyebrow="Console overview" title="One panel for your pink, premium cat cloud.">
+      <Panel title="One panel for your pink, premium cat cloud.">
         <div className={styles.hero}>
           <div className={styles.copyColumn}>
             <p className={styles.lead}>

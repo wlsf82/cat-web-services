@@ -17,7 +17,6 @@ const toneMap = {
 export const IncidentFeed = ({ incidents }: IncidentFeedProps) => {
     return (
         <Panel
-            eyebrow="Recent alerts"
             title="ClawedWatch incident feed"
             actions={<ServiceLogo serviceKey="clawedwatch" serviceName="ClawedWatch" size="sm" />}
         >

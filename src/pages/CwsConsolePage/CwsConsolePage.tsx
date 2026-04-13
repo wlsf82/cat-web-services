@@ -1,12 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
 import { AppShell } from '@/components/layout/AppShell/AppShell';
 import { TopBar } from '@/components/layout/TopBar/TopBar';
-import { actions, initialConsoleState, services } from '@/data/mockData';
+import { actions, fallbackBreeds, initialConsoleState, services } from '@/data/mockData';
 import { ActionCenter } from '@/features/actions/ActionCenter/ActionCenter';
-import { CatRegistrationModal } from '@/features/auth/CatRegistrationModal/CatRegistrationModal';
+import { ViewerAuthModal } from '@/features/auth/ViewerAuthModal/ViewerAuthModal';
 import { HeroOverview } from '@/features/hero/HeroOverview/HeroOverview';
 import { HumanStatusCard } from '@/features/human/HumanStatusCard/HumanStatusCard';
 import { IncidentFeed } from '@/features/incidents/IncidentFeed/IncidentFeed';
+import { ViewerProfileModal } from '@/features/profile/ViewerProfileModal/ViewerProfileModal';
 import { RecentlyViewedServices } from '@/features/recent/RecentlyViewedServices/RecentlyViewedServices';
 import { ExecutiveReview } from '@/features/review/ExecutiveReview/ExecutiveReview';
 import { ServiceDetailPanel } from '@/features/services/ServiceDetailPanel/ServiceDetailPanel';
@@ -16,7 +17,14 @@ import { UsageSummary } from '@/features/usage/UsageSummary/UsageSummary';
 import type { ServiceKey, ViewerAccount } from '@/types/cws';
 import { fetchBreedAvatar } from '@/utils/catApi';
 import { generateExecutiveReview, runAction } from '@/utils/cwsEngine';
-import { createViewerAccountNumber, loadViewerAccount, saveViewerAccount } from '@/utils/viewerAccount';
+import {
+  clearViewerAccount,
+  createViewerAccountNumber,
+  loadViewerAccount,
+  loadViewerAccounts,
+  saveViewerAccount,
+  signInViewerAccount
+} from '@/utils/viewerAccount';
 import styles from './CwsConsolePage.module.scss';
 
 const initialReview = generateExecutiveReview(initialConsoleState);
@@ -28,10 +36,17 @@ export const CwsConsolePage = () => {
   const [review, setReview] = useState(initialReview);
   const [searchValue, setSearchValue] = useState('');
   const [copied, setCopied] = useState(false);
-  const [registrationOpen, setRegistrationOpen] = useState(false);
+  const [authOpen, setAuthOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
   const [registrationSubmitting, setRegistrationSubmitting] = useState(false);
   const [viewerAccount, setViewerAccount] = useState<ViewerAccount | null>(null);
+  const [savedAccounts, setSavedAccounts] = useState<ViewerAccount[]>([]);
   const [recentKeys, setRecentKeys] = useState<ServiceKey[]>(defaultRecentKeys);
+
+  const refreshAccounts = () => {
+    setViewerAccount(loadViewerAccount());
+    setSavedAccounts(loadViewerAccounts());
+  };
 
   const handleReturnHome = () => {
     setSelectedServiceKey('catops');
@@ -39,11 +54,13 @@ export const CwsConsolePage = () => {
   };
 
   useEffect(() => {
-    setViewerAccount(loadViewerAccount());
+    refreshAccounts();
   }, []);
 
   useEffect(() => {
-    setRecentKeys((currentKeys) => [selectedServiceKey, ...currentKeys.filter((key) => key !== selectedServiceKey)].slice(0, 4));
+    setRecentKeys((currentKeys) =>
+        [selectedServiceKey, ...currentKeys.filter((key) => key !== selectedServiceKey)].slice(0, 4)
+    );
   }, [selectedServiceKey]);
 
   const filteredServices = useMemo(() => {
@@ -60,10 +77,11 @@ export const CwsConsolePage = () => {
   }, [searchValue]);
 
   const selectedService = useMemo(
-    () => filteredServices.find((service) => service.key === selectedServiceKey)
-      ?? services.find((service) => service.key === selectedServiceKey)
-      ?? services[0],
-    [filteredServices, selectedServiceKey]
+      () =>
+          filteredServices.find((service) => service.key === selectedServiceKey) ??
+          services.find((service) => service.key === selectedServiceKey) ??
+          services[0],
+      [filteredServices, selectedServiceKey]
   );
 
   const handleAction = (actionKey: (typeof actions)[number]['key']) => {
@@ -79,12 +97,10 @@ export const CwsConsolePage = () => {
   };
 
   const handleCopyAccountNumber = async () => {
-    if (!viewerAccount?.id) {
-      return;
-    }
+    const value = viewerAccount?.id ?? 'CWS-418-000';
 
     try {
-      await navigator.clipboard.writeText(viewerAccount.id);
+      await navigator.clipboard.writeText(value);
       setCopied(true);
       window.setTimeout(() => setCopied(false), 1400);
     } catch {
@@ -106,65 +122,88 @@ export const CwsConsolePage = () => {
     };
 
     saveViewerAccount(nextAccount);
-    setViewerAccount(nextAccount);
+    refreshAccounts();
     setRegistrationSubmitting(false);
-    setRegistrationOpen(false);
+    setAuthOpen(false);
+  };
+
+  const handleSignIn = (accountId: string) => {
+    signInViewerAccount(accountId);
+    refreshAccounts();
+    setAuthOpen(false);
+  };
+
+  const handleLogout = () => {
+    clearViewerAccount();
+    refreshAccounts();
+    setProfileOpen(false);
   };
 
   return (
-    <AppShell
-      topBar={
-        <TopBar
-            searchValue={searchValue}
-            onSearchChange={setSearchValue}
-            account={viewerAccount}
-            onOpenRegistration={() => setRegistrationOpen(true)}
-            onCopyAccountNumber={handleCopyAccountNumber}
-            copied={copied}
-            activeServiceKey={selectedService?.key ?? null}
-            activeServiceName={selectedService?.name ?? null}
-            onReturnHome={handleReturnHome}
-        />
-      }
-      bottomDock={<ClawedShell account={viewerAccount} selectedServiceKey={selectedServiceKey} recentKeys={recentKeys} />}
-    >
-      <div className={styles.layout}>
-        <HeroOverview selectedService={selectedService} account={viewerAccount} />
+      <AppShell
+          topBar={
+            <TopBar
+                searchValue={searchValue}
+                onSearchChange={setSearchValue}
+                account={viewerAccount}
+                onOpenAuth={() => setAuthOpen(true)}
+                onOpenProfile={() => setProfileOpen(true)}
+                onCopyAccountNumber={handleCopyAccountNumber}
+                copied={copied}
+                activeServiceKey={selectedService?.key ?? null}
+                activeServiceName={selectedService?.name ?? null}
+                onReturnHome={handleReturnHome}
+            />
+          }
+          bottomDock={<ClawedShell account={viewerAccount} selectedServiceKey={selectedServiceKey} recentKeys={recentKeys} />}
+      >
+        <div className={styles.layout}>
+          <HeroOverview selectedService={selectedService} account={viewerAccount} />
 
-        <div className={styles.contentGrid}>
-          <div className={styles.mainColumn}>
-            <ServiceGrid services={filteredServices} activeKey={selectedServiceKey} onSelect={setSelectedServiceKey} />
+          <div className={styles.contentGrid}>
+            <div className={styles.mainColumn}>
+              <ServiceGrid services={filteredServices} activeKey={selectedServiceKey} onSelect={setSelectedServiceKey} />
 
-            <div className={styles.twoUp}>
-              <UsageSummary usageSummary={consoleState.usageSummary} />
-              <RecentlyViewedServices
-                services={services}
-                activeKey={selectedServiceKey}
-                recentKeys={recentKeys}
-                onSelect={setSelectedServiceKey}
-              />
+              <div className={styles.twoUp}>
+                <UsageSummary usageSummary={consoleState.usageSummary} />
+                <RecentlyViewedServices
+                    services={services}
+                    activeKey={selectedServiceKey}
+                    recentKeys={recentKeys}
+                    onSelect={setSelectedServiceKey}
+                />
+              </div>
+
+              <div className={styles.twoUp}>
+                <ServiceDetailPanel service={selectedService} />
+                <HumanStatusCard humanStatus={consoleState.humanStatus} />
+              </div>
             </div>
 
-            <div className={styles.twoUp}>
-              <ServiceDetailPanel service={selectedService} />
-              <HumanStatusCard humanStatus={consoleState.humanStatus} />
+            <div className={styles.sideColumn}>
+              <ActionCenter actions={actions} onAction={handleAction} />
+              <IncidentFeed incidents={consoleState.incidents} />
+              <ExecutiveReview review={review} onGenerate={handleGenerateReview} />
             </div>
-          </div>
-
-          <div className={styles.sideColumn}>
-            <ActionCenter actions={actions} onAction={handleAction} />
-            <IncidentFeed incidents={consoleState.incidents} />
-            <ExecutiveReview review={review} onGenerate={handleGenerateReview} />
           </div>
         </div>
-      </div>
 
-      <CatRegistrationModal
-        open={registrationOpen}
-        onClose={() => setRegistrationOpen(false)}
-        onSubmit={handleRegister}
-        submitting={registrationSubmitting}
-      />
-    </AppShell>
+        <ViewerAuthModal
+            open={authOpen}
+            existingAccounts={savedAccounts}
+            submitting={registrationSubmitting}
+            onClose={() => setAuthOpen(false)}
+            onRegister={handleRegister}
+            onSignIn={handleSignIn}
+            breeds={fallbackBreeds}
+        />
+
+        <ViewerProfileModal
+            open={profileOpen}
+            account={viewerAccount}
+            onClose={() => setProfileOpen(false)}
+            onLogout={handleLogout}
+        />
+      </AppShell>
   );
 };
