@@ -5,6 +5,7 @@ import { actions, fallbackBreeds, initialConsoleState, services } from '@/data/m
 import { ActionCenter } from '@/features/actions/ActionCenter/ActionCenter';
 import { ViewerAuthModal } from '@/features/auth/ViewerAuthModal/ViewerAuthModal';
 import { HeroOverview } from '@/features/hero/HeroOverview/HeroOverview';
+import { ServiceGrid } from '@/features/services/ServiceGrid/ServiceGrid';
 import { HumanStatusCard } from '@/features/human/HumanStatusCard/HumanStatusCard';
 import { IncidentFeed } from '@/features/incidents/IncidentFeed/IncidentFeed';
 import { ViewerProfileModal } from '@/features/profile/ViewerProfileModal/ViewerProfileModal';
@@ -145,6 +146,12 @@ export const CwsConsolePage = () => {
       >
         <div className={styles.layout}>
           <HeroOverview selectedService={selectedService} account={viewerAccount}/>
+
+          <ServiceGrid
+              services={filteredServices}
+              activeKey={selectedServiceKey}
+              onSelect={setSelectedServiceKey}
+          />
 
           <div className={styles.homeGrid}>
             <div className={styles.primaryColumn}>
